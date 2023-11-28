@@ -26,27 +26,40 @@ class Instructeur extends BaseController
             $instructeurs = $this->instructeurModel->getInstructeurs();
 
             $aantalInstructeurs = sizeof($instructeurs);
-
+            $instructeurVoonaam = ($instructeur->Voornaam);
 
             $date = date_create($instructeur->DatumInDienst);
             $formatted_date = date_format($date, 'd-m-Y');
 
+            $isactief = ($instructeur->IsActief);
+
+            if ($isactief == 0) {
+                $status = "
+                    <a href='" . URLROOT . "/instructeur/IsActief/$instructeur->Id'>
+                    <i class='bi bi-hand-thumbs-up-fill'></i>                        </a>
+                    </a>";
+            } else {
+                $status = "
+                <a href='" . URLROOT . "/instructeur/nietActief/$instructeur->Id'>
+                <i class='bi bi-bandaid'></i>
+                </a>";
+            }
             $rows .= "<tr>
                         <td>$instructeur->Voornaam</td>
                         <td>$instructeur->Tussenvoegsel</td>
                         <td>$instructeur->Achternaam</td>
                         <td>$instructeur->Mobiel</td>
                         <td>$formatted_date</td>            
-                        <td>$instructeur->AantalSterren</td>  
-
+                        <td>$instructeur->AantalSterren</td>
+                        
                                   
                         <td>
                             <a href='" . URLROOT . "/instructeur/overzichtvoertuigen/$instructeur->Id'>
                                 <i class='bi bi-car-front'></i>
                             </a>
                         </td> 
-                       
-
+                      
+                        <td>$status</td>
                       </tr>";
         }
 
@@ -54,10 +67,14 @@ class Instructeur extends BaseController
             'title' => 'Instructeurs in dienst',
             'aantalInstructeurs' => $aantalInstructeurs,
             'rows' => $rows,
-            'allVehicles' => $allVehicles
+            'allVehicles' => $allVehicles,
+            'IsActief' => isset($GLOBALS['Actief']) ? "$instructeurVoonaam is ziek/met verlof gemeld" : null,
+
 
         ];
-
+        if (isset($GLOBALS['Actief'])) {
+            header('Refresh:3; url=/Instructeur/overzichtInstructeur');
+        }
         $this->view('Instructeur/overzichtinstructeur', $data);
     }
 
@@ -169,6 +186,7 @@ class Instructeur extends BaseController
 
 
         $nietToegewezenVoertuigen = $this->instructeurModel->getNietToegewezenVoertuigen();
+        // var_dump($nietToegewezenVoertuigen);exit();
         $instructeurInfo = $this->instructeurModel->getInstructeurById($instructeurId);
         // $voertuigId = $this->instructeurModel->getVoertuigId();
 
@@ -356,5 +374,21 @@ class Instructeur extends BaseController
     function deleteMessage()
     {
         $this->view('Instructeur/deleteMessage');
+    }
+    function nietActief($instructeurId)
+    {
+        $this->instructeurModel->updateNietActief($instructeurId);
+        header('Refresh:3; url=/Instructeur/overzichtInstructeur');
+    }
+
+    function IsActief($instructeurId)
+    {
+        $GLOBALS['IsActief'] = true;
+
+        $this->instructeurModel->updateIsActief($instructeurId);
+        $test = $this->instructeurModel->getInstructeurById($instructeurId);
+        var_dump($test);
+        echo "Hoi" . $test->Voornaam . $test->Tussenvoegsel . $test->Achternaam;
+        header('Refresh:3; url=/Instructeur/overzichtInstructeur');
     }
 }
