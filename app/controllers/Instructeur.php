@@ -58,8 +58,12 @@ class Instructeur extends BaseController
                                 <i class='bi bi-car-front'></i>
                             </a>
                         </td> 
-                      
+                                    
                         <td>$status</td>
+                        <td>
+                            <a href='" . URLROOT . "/instructeur/deleteInstructeur/$instructeur->Id'>
+                            <i class='bi bi-trash3'></i>                            </a>
+                        </td> 
                       </tr>";
         }
 
@@ -117,6 +121,7 @@ class Instructeur extends BaseController
                  * Zet de datum in het juiste format
                  */
                 $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
+                $thing = $voertuig->igooo ? "<a href='" . URLROOT . "/instructeur/deleteVoertuigFromInstructeur/$voertuig->Id/$instructeurId'><i class='bi bi-check-square'></i>" : "<i class='bi bi-x'></i>";
 
                 $tableRows .= "<tr>
 
@@ -137,8 +142,9 @@ class Instructeur extends BaseController
                <img src = '/public/img/b_drop.png'>
                </a> 
                </td>  
+               
 
-                
+               <td>$thing</td> 
         </tr>";
             }
         }
@@ -368,7 +374,7 @@ class Instructeur extends BaseController
 
         $this->view('Instructeur/deleteMessage');
 
-        header('Refresh:3; url=/Instructeur/alleVoertuigen');
+        header('Refresh:0; url=/Instructeur/alleVoertuigen');
     }
 
     function deleteMessage()
@@ -378,7 +384,7 @@ class Instructeur extends BaseController
     function nietActief($instructeurId)
     {
         $this->instructeurModel->updateNietActief($instructeurId);
-        header('Refresh:3; url=/Instructeur/overzichtInstructeur');
+        header('Refresh:0; url=/Instructeur/overzichtInstructeur');
     }
 
     function IsActief($instructeurId)
@@ -389,6 +395,24 @@ class Instructeur extends BaseController
         $test = $this->instructeurModel->getInstructeurById($instructeurId);
         var_dump($test);
         echo "Hoi" . $test->Voornaam . $test->Tussenvoegsel . $test->Achternaam;
-        header('Refresh:3; url=/Instructeur/overzichtInstructeur');
+        header('Refresh:0; url=/Instructeur/overzichtInstructeur');
+    }
+
+    public function deleteVoertuigFromInstructeur($voertuigId, $instructeurId)
+    {
+
+        $this->instructeurModel->deleteVoertuigFromInstructeur($instructeurId, $voertuigId);
+        $this->overzichtVoertuigen($instructeurId);
+    }
+    function deleteInstructeur($instructeurId)
+    {
+        $succes = $this->instructeurModel->deleteInstructeur($instructeurId);
+        header('Refresh:0; url=/Instructeur/overzichtInstructeur');
+
+        if ($succes) {
+            echo "Het geselecteerde instructeur is verwijderd";
+        } else {
+            echo "Het is niet gelukt";
+        }
     }
 }

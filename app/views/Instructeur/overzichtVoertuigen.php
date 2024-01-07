@@ -48,6 +48,8 @@
             <th>RijbewijsCategorie</th>
             <th>wijzigen</th>
             <th>Verwijderen</th>
+            <th>Toegewezen</th>
+
 
 
         </thead>

@@ -36,11 +36,12 @@ class InstructeurModel
                             ,VOER.Brandstof
                             ,TYVO.TypeVoertuig
                             ,TYVO.RijbewijsCategorie
+                ,(select count(*) > 1 as igooo from VoertuigInstructeur where VoertuigId = VOER.Id) as igooo
 
                 FROM        Voertuig    AS  VOER
                 
                 INNER JOIN  TypeVoertuig AS TYVO
-
+        
                 ON          TYVO.Id = VOER.TypeVoertuigId
                 
                 INNER JOIN  VoertuigInstructeur AS VOIN
@@ -66,6 +67,7 @@ class InstructeurModel
                             ,VOER.Brandstof
                             ,TYVO.TypeVoertuig
                             ,TYVO.RijbewijsCategorie
+
 
                 FROM        Voertuig    AS  VOER
                 
@@ -261,7 +263,7 @@ class InstructeurModel
                     DatumGewijzigd = SYSDATE(6)
                 WHERE Id = $instructeurId";
         $this->db->query($sql);
-        return $this->db->resultSet();
+        return $this->db->execute();
     }
     function updateIsActief($instructeurId)
     {
@@ -271,5 +273,30 @@ class InstructeurModel
                 WHERE Id = $instructeurId";
         $this->db->query($sql);
         return $this->db->resultSet();
+    }
+    function deleteVoertuigFromInstructeur($instructeurId, $voertuigId)
+    {
+        $sql = "DELETE VoertuigInstructeur
+        WHERE InstructeurId = $instructeurId AND VoertuigId = $voertuigId";
+        $this->db->query($sql);
+        $this->db->execute();
+    }
+    function deleteInstructeur($instructeurId)
+    {
+
+        try {
+            $sql = "DELETE FROM VoertuigInstructeur
+               WHERE InstructeurId = $instructeurId";
+            $this->db->query($sql);
+            $this->db->execute();
+            $sql = "DELETE FROM Instructeur
+               WHERE Id = $instructeurId";
+
+            $this->db->query($sql);
+            $this->db->execute();
+        } catch (PDOException $e) {
+            return 0;
+        }
+        return 1;
     }
 }

@@ -48,4 +48,8 @@ class Database
     {
         $this->statement->bindValue($param, $value);
     }
+    public function execute()
+    {
+        $this->statement->execute();
+    }
 }
