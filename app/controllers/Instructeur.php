@@ -91,6 +91,8 @@ class Instructeur extends BaseController
         $naam = $instructeurInfo->Voornaam . " " . $instructeurInfo->Tussenvoegsel . " " . $instructeurInfo->Achternaam;
         $datumInDienst = $instructeurInfo->DatumInDienst;
         $aantalSterren = $instructeurInfo->AantalSterren;
+        $isActief = $instructeurInfo->IsActief;
+
 
         $toevoegen = "<a href='" . URLROOT . "/instructeur/overzichtNietToegewezenVoertuigen/$instructeurId'>Toevoegen Voertuig</a>";
 
@@ -110,6 +112,13 @@ class Instructeur extends BaseController
                                 Er zijn op dit moment nog geen voertuigen toegewezen aan deze instructeur
                             </td>
                           </tr>";
+        } else if ($isActief == 0) {
+
+            $tableRows = "<tr>
+                                            <td colspan='6'>
+                                                Deze instructeur is momenteel met verlof
+                                            </td>
+                                          </tr>";
         } else {
             /**
              * Bouw de rows op in een foreach-loop en stop deze in de variabele
@@ -121,7 +130,7 @@ class Instructeur extends BaseController
                  * Zet de datum in het juiste format
                  */
                 $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
-                $thing = $voertuig->igooo ? "<a href='" . URLROOT . "/instructeur/deleteVoertuigFromInstructeur/$voertuig->Id/$instructeurId'><i class='bi bi-check-square'></i>" : "<i class='bi bi-x'></i>";
+                $thing = $voertuig->test ? "<a href='" . URLROOT . "/instructeur/deleteVoertuigFromInstructeur/$voertuig->Id/$instructeurId'><i class='bi bi-check-square'></i>" : "<i class='bi bi-x'></i>";
 
                 $tableRows .= "<tr>
 

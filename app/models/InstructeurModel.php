@@ -36,7 +36,7 @@ class InstructeurModel
                             ,VOER.Brandstof
                             ,TYVO.TypeVoertuig
                             ,TYVO.RijbewijsCategorie
-                ,(select count(*) > 1 as igooo from VoertuigInstructeur where VoertuigId = VOER.Id) as igooo
+                ,(select count(*) > 1 as test from VoertuigInstructeur where VoertuigId = VOER.Id) as test
 
                 FROM        Voertuig    AS  VOER
                 
@@ -94,6 +94,7 @@ class InstructeurModel
                       ,Achternaam
                       ,DatumInDienst
                       ,AantalSterren
+                      ,IsActief
                 FROM  Instructeur
                 WHERE Id = $Id";
 
